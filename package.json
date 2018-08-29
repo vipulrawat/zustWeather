@@ -1,0 +1,19 @@
+{
+  "name": "zustweather",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "client": "cd client && npm start",
+    "server": "nodemon server.js",
+    "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\""
+  },
+  "dependencies": {
+    "express": "*"
+  },
+  "devDependencies": {
+    "concurrently": "*"
+  },
+  "author": "Vipul Rawat",
+  "license": "ISC"
+}
