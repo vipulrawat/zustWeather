@@ -1,0 +1,26 @@
+Geocode API call sample
+
+https://maps.googleapis.com/maps/api/geocode/json?address=rishikesh&key=AIzaSyBwiXlKtSUuzZkv1ftnz1rO2yQI0MOjSdY
+
+DarkSky API call sample
+
+https://api.darksky.net/forecast/514a740933648faa7bc0b035ca65d0d7/37.8267,-122.4233
+
+
+
+https.get('https://maps.googleapis.com/maps/api/geocode/json?address=rishikesh&key=AIzaSyBwiXlKtSUuzZkv1ftnz1rO2yQI0MOjSdY', (resp) => {
+      
+    
+      // A chunk of data has been recieved.
+      resp.on('data', (chunk) => {
+        data += chunk;
+      });
+    
+      // The whole response has been received. Print out the result.
+      resp.on('end', () => {
+        console.log(JSON.parse(data));
+      });
+    
+    }).on("error", (err) => {
+      console.log("Error: " + err.message);
+    });
