@@ -6,7 +6,7 @@ class Weather extends Component {
         super(props)
         this.state={
             haveData:false,
-            weatherData:{}
+            weatherData:[]
         }
     }
     componentDidMount(){
@@ -17,6 +17,7 @@ class Weather extends Component {
           })
           .then(function(data){
               self.setState({haveData:true,weatherData:data});
+              console.log(self.state.weatherData)
           })
           .catch(function (error) {
             console.log(error);
@@ -33,9 +34,9 @@ class Weather extends Component {
         return(
             <div>
                 <h3>Got something</h3>
-                <p>LOCATION:{this.state.weatherData.loc}</p>
-                <p>LATITUDE:{this.state.weatherData.lat}</p>
-                <p>LONGITUDE:{this.state.weatherData.long}</p>
+                <p>LOCATION:{this.state.weatherData[1]}</p>
+                <h2>{this.state.weatherData[0].temperature} &#x2103;</h2>
+                <p>{this.state.weatherData[0].summary}</p>
             </div>
         );
     }
