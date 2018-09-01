@@ -1,12 +1,17 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 
+import Error from './Error';
+
 class Weather extends Component {
     constructor(props){
         super(props)
         this.state={
+            isLoading:true,
             haveData:false,
-            weatherData:[]
+            haveError:false,
+            weatherData:[],
+            err:{}
         }
     }
     componentDidMount(){
@@ -16,21 +21,45 @@ class Weather extends Component {
             return response.data;
           })
           .then(function(data){
-              self.setState({haveData:true,weatherData:data});
+              self.setState({haveData:true,isLoading:false,weatherData:data});
               console.log(self.state.weatherData)
           })
           .catch(function (error) {
-            console.log(error);
+              if(error.response){
+                  let errorObj={
+                      code:error.response.status,
+                      data:error.response.data
+                  }
+                  self.setState({haveError:true,isLoading:false,err:errorObj});
+              }
+              else{
+                  console.log("NEW ERROR:"+error)
+              }     
           });
     }
   render() {
-    if(this.state.haveData===false){
+    if(this.state.haveError===true){
+        return (
+            <div>
+                <Error error={this.state.err}/>
+            </div>
+        )
+    }
+    else if(this.state.haveData===false && this.state.isLoading===false){    
         return(
             <div>
                 <h3>No Location is set</h3>
             </div>
         );
-    }else{
+    } 
+    else if(this.state.isLoading===true){
+        return(
+            <div>
+                Loading...
+            </div>
+        );
+    }
+    else{
         return(
             <div>
                 <h3>Got something</h3>

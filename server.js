@@ -32,21 +32,21 @@ app.get('/get_weather',(req,res)=>{
   }
   //res.clearCookie('user_location');
   res.cookie('user_location',location);
-  console.log('NEW COOKIE:'+req.cookies.user_location)
-  getCords(location)
+  //console.log('NEW COOKIE:'+req.cookies.user_location)
+  getWeather(location)
             .then((response)=>{
                res.send(response);
             })
             .catch((error)=>{
+              res.sendStatus(404);
               console.log('ERROR IN GET:'+error)
             });
 })
 
-var getCords = async function(location){
-  //let url = config.bing_url+location+'&key'+config.geocode_secret;
-  let url = 'https://dev.virtualearth.net/REST/v1/Locations?locality='+location+'&key=AlIvxPnSWcxaa89nT5EL7HCDgoo7lrN8ax7PwVBEJBJdL2HYzj_cCVc0uujbINGu';
-  let wurl = 'https://api.darksky.net/forecast/514a740933648faa7bc0b035ca65d0d7/';
-  let coords = await axios.get(url)
+var getWeather = async function(location){
+  let bingUrl = config.bing_url+location+'&key='+config.geocode_secret;
+  let darkUrl = config.dark_sky_url+config.dark_sky_secret+'/';
+  let coords = await axios.get(bingUrl)
     .then((response)=>{
       var data = {
         lat:'',
@@ -59,19 +59,18 @@ var getCords = async function(location){
       return data;
     })
     .catch((error)=>{
-      console.log('ERROR IN GETCORDS:'+error.response.status)
+      console.log('ERROR IN getWeather()>coords:'+error.response.status)
     })
     
-    let weatherArray =   axios.get(wurl+coords.lat+','+coords.long+'?units=si')
+    let weatherArray =   axios.get(darkUrl+coords.lat+','+coords.long+'?units=si')
                       .then((response)=>{
                         
                         return [response.data.currently,coords.place];
                       })
                       .catch((error)=>{
-                        console.log('ERROR IN DARKSKY:'+error.response.status)
+                        console.log('ERROR IN getWeather()>weatherArray:'+error.response.status)
                       })
     return weatherArray;
 }
-
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
