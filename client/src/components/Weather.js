@@ -19,27 +19,33 @@ class Weather extends Component {
     }
     componentDidMount(){
         var self = this; //brother of this :P
+        self.loadData();
+        setInterval(self.loadData,900000);
+    }
+    loadData=()=>{
+        var self = this;
         axios.get('/get_weather')
-          .then(function (response) {
-            return response.data;
-          })
-          .then(function(data){
-              self.setState({haveData:true,isLoading:false,weatherData:data});
-              let str = data[0].icon;
-              self.setState({icon:str.split('-').join('')})
-          })
-          .catch(function (error) {
-              if(error.response){
-                  let errorObj={
-                      code:error.response.status,
-                      data:error.response.data
-                  }
-                  self.setState({haveError:true,isLoading:false,err:errorObj});
-              }
-              else{
-                  console.log("NEW ERROR:"+error)
-              }     
-          });
+        .then(function (response) {
+          return response.data;
+        })
+        .then(function(data){
+            self.setState({haveData:true,isLoading:false,weatherData:data});
+            let str = data[0].icon;
+            self.setState({icon:str.split('-').join('')})
+            console.log('Getting')
+        })
+        .catch(function (error) {
+            if(error.response){
+                let errorObj={
+                    code:error.response.status,
+                    data:error.response.data
+                }
+                self.setState({haveError:true,isLoading:false,err:errorObj});
+            }
+            else{
+                console.log("NEW ERROR:"+error)
+            }     
+        });
     }
   render() {
     if(this.state.haveError===true){
