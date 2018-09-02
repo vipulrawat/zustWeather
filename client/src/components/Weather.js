@@ -1,10 +1,23 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 
-//import Icon from './Icon';
+import Icon from './Icon';
 import Loading from './Loading';
 import Error from './Error';
-import rain from './rain.png';
+//import rain from './rain.png';
+/*
+import rain from './images/rain.png';
+import clearday from './images/clear-day.png';
+import clearnight from './images/clear-night.png';
+import snow from './images/snow.png';
+import sleet from './images/sleet.png';
+import wind from './images/wind.png';
+import fog from './images/fog.png';
+import cloudy from './images/cloudy.png';
+import partlycloudyday from './images/partlycloudyday.png';
+import partlycloudynight from './images/partlycloudynight.png';
+import alert from './images/alert.png';
+*/
 class Weather extends Component {
     constructor(props){
         super(props)
@@ -12,6 +25,7 @@ class Weather extends Component {
             isLoading:true,
             haveData:false,
             haveError:false,
+            icon:'',
             weatherData:[],
             err:{}
         }
@@ -24,6 +38,9 @@ class Weather extends Component {
           })
           .then(function(data){
               self.setState({haveData:true,isLoading:false,weatherData:data});
+              let str = data[0].icon;
+              self.setState({icon:str.split('-').join('')})
+              console.log('ICON:'+self.state.icon);
               console.log(self.state.weatherData)
           })
           .catch(function (error) {
@@ -62,10 +79,9 @@ class Weather extends Component {
         );
     }
     else{
-        console.log(this.state.weatherData[0])
         return(
             <div className="weather">
-                <div id="icon"><img src={rain}/></div>
+                <div id="icon"><Icon ic={this.state.icon}/></div>
                 <div id="temperature">{this.state.weatherData[0].temperature}
                     <span>{this.state.weatherData[0].summary}</span>
                 </div>

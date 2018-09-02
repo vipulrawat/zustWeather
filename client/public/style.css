@@ -18,7 +18,7 @@
     grid-template-columns: 30% auto auto;
 }
 
-.main .weather #icon>img{
+.main .weather #icon img{
   width: 100px;
   height: auto;
 
