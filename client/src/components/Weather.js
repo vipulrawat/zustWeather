@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 
+//import Icon from './Icon';
+import Loading from './Loading';
 import Error from './Error';
-
+import rain from './rain.png';
 class Weather extends Component {
     constructor(props){
         super(props)
@@ -55,17 +57,19 @@ class Weather extends Component {
     else if(this.state.isLoading===true){
         return(
             <div>
-                Loading...
+               <Loading/>
             </div>
         );
     }
     else{
+        console.log(this.state.weatherData[0])
         return(
-            <div>
-                <h3>Got something</h3>
-                <p>LOCATION:{this.state.weatherData[1]}</p>
-                <h2>{this.state.weatherData[0].temperature} &#x2103;</h2>
-                <p>{this.state.weatherData[0].summary}</p>
+            <div className="weather">
+                <div id="icon"><img src={rain}/></div>
+                <div id="temperature">{this.state.weatherData[0].temperature}
+                    <span>{this.state.weatherData[0].summary}</span>
+                </div>
+                <div id="location">{this.state.weatherData[1]}</div>
             </div>
         );
     }

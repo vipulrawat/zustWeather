@@ -12,9 +12,6 @@ class Form extends Component {
         this.setState({location:e.target.value})
     }
     handleSubmit=(e)=>{
-       // e.preventDefault();
-        //console.log(this.state.location+' is to be posted');
-
         axios.post('/get_user_location',{
             location: this.state.location
         })

@@ -1,11 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const axios = require('axios')
 const app = express();
 const port = process.env.PORT || 5000;
 //custom imports
-const config = require('./server_files/config');
+var {getWeather} = require('./server_files/getWeather')   //Don't know much about this, but it just works.
 
 var location='';
 const DEFAULT_LOCATION='Delhi';
@@ -20,9 +19,9 @@ app.post('/get_user_location',(req,res)=>{
   res.redirect('/get_weather')
 })
 app.get('/get_weather',(req,res)=>{
-  let cookieValue = req.cookies.user_location;
+  let cookieValue = req.cookies.user_location;    //Saving the current cookie's value
 
-  if(location==='' && cookieValue===undefined){       //If neither location is provided nor it exists in cookies
+  if(location==='' && cookieValue===undefined){       //If neither location provided nor it exists in cookies
     location=DEFAULT_LOCATION;
     console.log('USING DEFAULT LOCATION:'+location);  
   }
@@ -30,9 +29,8 @@ app.get('/get_weather',(req,res)=>{
     location = cookieValue;
     console.log('USING COOKIES LOCATION:'+cookieValue);
   }
-  //res.clearCookie('user_location');
+  //res.clearCookie('user_location');             //If want to clear the cookie
   res.cookie('user_location',location);
-  //console.log('NEW COOKIE:'+req.cookies.user_location)
   getWeather(location)
             .then((response)=>{
                res.send(response);
@@ -43,34 +41,5 @@ app.get('/get_weather',(req,res)=>{
             });
 })
 
-var getWeather = async function(location){
-  let bingUrl = config.bing_url+location+'&key='+config.geocode_secret;
-  let darkUrl = config.dark_sky_url+config.dark_sky_secret+'/';
-  let coords = await axios.get(bingUrl)
-    .then((response)=>{
-      var data = {
-        lat:'',
-        long:'',
-        place:''
-      }
-      data.lat=response.data.resourceSets[0].resources[0].geocodePoints[0].coordinates[0];
-      data.long=response.data.resourceSets[0].resources[0].geocodePoints[0].coordinates[1];
-      data.place=response.data.resourceSets[0].resources[0].name;
-      return data;
-    })
-    .catch((error)=>{
-      console.log('ERROR IN getWeather()>coords:'+error.response.status)
-    })
-    
-    let weatherArray =   axios.get(darkUrl+coords.lat+','+coords.long+'?units=si')
-                      .then((response)=>{
-                        
-                        return [response.data.currently,coords.place];
-                      })
-                      .catch((error)=>{
-                        console.log('ERROR IN getWeather()>weatherArray:'+error.response.status)
-                      })
-    return weatherArray;
-}
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
